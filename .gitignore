@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+# Circuit artifacts (wasm/zkey/vkey, ~4 MB total) are intentionally NOT
+# ignored: they are small enough to commit and are required at runtime.
+# If you prefer to fetch them at build time, use scripts/download-circuits.sh.
