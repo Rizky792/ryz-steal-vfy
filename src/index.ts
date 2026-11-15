@@ -1,5 +1,8 @@
 // RYZ — Steal the VFY agent (Agent Games, zkVerify), practice mode.
-// Express server: POST /agent (turn envelopes + preflight), GET /health.
+// Express server: POST /agent AND POST / (turn envelopes + preflight), GET
+// /health, GET /. The platform POSTs the signed preflight to the registered
+// endpoint URL itself, i.e. the root path — a POST / with no route used to
+// answer 404 and fail preflight, so "/" is handled by the same handler.
 // - Verifies HMAC-SHA256 (x-agent-games-signature) over the raw request body
 //   before any decision logic; 401 on missing/invalid signature.
 // - decideTurn is pure (see steal.ts); every turn gets a fresh Groth16 proof.
@@ -75,7 +78,7 @@ function isTurnEnvelope(body: any): body is TurnEnvelope {
   );
 }
 
-app.post("/agent", async (req: Request, res: Response) => {
+app.post(["/", "/agent"], async (req: Request, res: Response) => {
   const rawBody: Buffer = (req as any).rawBody ?? Buffer.from("{}");
   const body: any = req.body ?? {};
   const signatureHeader = req.headers[SIGNATURE_HEADER];
